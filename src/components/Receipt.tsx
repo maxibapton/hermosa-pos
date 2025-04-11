@@ -1,6 +1,6 @@
 import React from 'react';
 import { CartItem, Customer, PaymentInfo } from '../types';
-import { Building2, Phone, Mail, Receipt as ReceiptIcon } from 'lucide-react';
+import { Store, Phone, Mail, Receipt as ReceiptIcon } from 'lucide-react';
 
 const translations = {
   title: "Reçu de Paiement",
@@ -19,7 +19,7 @@ const translations = {
   cash: "Espèces",
   card: "Carte",
   thankYou: "Merci de votre achat !",
-  visitAgain: "À bientôt chez Hermosa"
+  visitAgain: "À bientôt chez CBD Wellness"
 };
 
 interface ReceiptProps {
@@ -52,7 +52,7 @@ export function Receipt({
       {/* Store Header */}
       <div className="text-center mb-6">
         <div className="flex justify-center mb-2">
-          <Building2 className="h-8 w-8" />
+          <Store className="h-8 w-8" />
         </div>
         <h1 className="text-xl font-bold">CBD Wellness</h1>
         <p className="text-gray-600">123 Main Street</p>
@@ -110,15 +110,15 @@ export function Receipt({
                     {item.discount ? (
                       <>
                         <span className="line-through text-gray-500">
-                          €{item.price.toFixed(2)}
+                          ${item.price.toFixed(2)}
                         </span>
                         <br />
                         <span>
-                          €{(item.price - item.discount.amount).toFixed(2)}
+                          ${(item.price - item.discount.amount).toFixed(2)}
                         </span>
                       </>
                     ) : (
-                      <span>€{item.price.toFixed(2)}</span>
+                      <span>${item.price.toFixed(2)}</span>
                     )}
                   </td>
                 </tr>
@@ -127,9 +127,9 @@ export function Receipt({
                     <td colSpan={2}>Discount ({
                       item.discount.type === 'percentage'
                         ? `${item.discount.value}%`
-                        : `€${item.discount.value}`
+                        : `$${item.discount.value}`
                     })</td>
-                    <td className="text-right">-€{item.discount.amount.toFixed(2)}</td>
+                    <td className="text-right">-${item.discount.amount.toFixed(2)}</td>
                   </tr>
                 )}
               </React.Fragment>
@@ -142,12 +142,12 @@ export function Receipt({
       <div className="space-y-1 mb-4">
         <div className="flex justify-between">
           <span>{translations.subtotal}:</span>
-          <span>€{subtotal.toFixed(2)}</span>
+          <span>${subtotal.toFixed(2)}</span>
         </div>
         {itemDiscounts > 0 && (
           <div className="flex justify-between text-green-600">
             <span>{translations.itemDiscounts}:</span>
-            <span>-€{itemDiscounts.toFixed(2)}</span>
+            <span>-${itemDiscounts.toFixed(2)}</span>
           </div>
         )}
         {totalDiscount && (
@@ -155,18 +155,18 @@ export function Receipt({
             <span>{translations.totalDiscount} ({
               totalDiscount.type === 'percentage'
                 ? `${totalDiscount.value}%`
-                : `€${totalDiscount.value}`
+                : `$${totalDiscount.value}`
             }):</span>
-            <span>-€{totalDiscount.amount.toFixed(2)}</span>
+            <span>-${totalDiscount.amount.toFixed(2)}</span>
           </div>
         )}
         <div className="flex justify-between">
           <span>{translations.vat}:</span>
-          <span>€{totalVat.toFixed(2)}</span>
+          <span>${totalVat.toFixed(2)}</span>
         </div>
         <div className="flex justify-between font-bold text-lg border-t pt-2">
           <span>{translations.total}:</span>
-          <span>€{total.toFixed(2)}</span>
+          <span>${total.toFixed(2)}</span>
         </div>
       </div>
 
@@ -174,15 +174,15 @@ export function Receipt({
       <div className="text-center border-t pt-4">
         <div className="font-medium mb-1">{translations.payment}</div>
         {payment.method === 'cash' && (
-          <div>{translations.cash}: €{payment.cashAmount?.toFixed(2)}</div>
+          <div>{translations.cash}: ${payment.cashAmount?.toFixed(2)}</div>
         )}
         {payment.method === 'card' && (
-          <div>{translations.card}: €{payment.cardAmount?.toFixed(2)}</div>
+          <div>{translations.card}: ${payment.cardAmount?.toFixed(2)}</div>
         )}
         {payment.method === 'split' && (
           <>
-            <div>{translations.cash}: €{payment.cashAmount?.toFixed(2)}</div>
-            <div>{translations.card}: €{payment.cardAmount?.toFixed(2)}</div>
+            <div>{translations.cash}: ${payment.cashAmount?.toFixed(2)}</div>
+            <div>{translations.card}: ${payment.cardAmount?.toFixed(2)}</div>
           </>
         )}
       </div>
@@ -195,5 +195,3 @@ export function Receipt({
     </div>
   );
 }
-
-export default Receipt;
