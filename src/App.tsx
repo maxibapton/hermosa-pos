@@ -11,9 +11,8 @@ import { Sidebar } from './components/Sidebar';
 import { StoreSelector } from './components/StoreSelector';
 import { StoreManagement } from './components/StoreManagement';
 import { StockManagement } from './components/StockManagement';
-import { SettingsManagement } from './components/SettingsManagement';
 import { products as initialProducts, categories as initialCategories, stores as initialStores } from './data';
-import { CartItem, Product, ProductFormData, SaleRecord, Category, Customer, CustomerFormData, PaymentInfo, Store, AppSettings } from './types';
+import { CartItem, Product, ProductFormData, SaleRecord, Category, Customer, CustomerFormData, PaymentInfo, Store } from './types';
 
 function App() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -22,31 +21,10 @@ function App() {
   const [selectedStore, setSelectedStore] = useState<Store>(stores[0]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState<'register' | 'catalog' | 'sales' | 'customers' | 'stores' | 'stock' | 'settings'>('register');
+  const [activeSection, setActiveSection] = useState<'register' | 'catalog' | 'sales' | 'customers' | 'stores' | 'stock'>('register');
   const [catalogSection, setCatalogSection] = useState<'products' | 'categories'>('products');
   const [salesHistory, setSalesHistory] = useState<SaleRecord[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [settings, setSettings] = useState<AppSettings>({
-    emailSettings: {
-      fromEmail: 'hello@hermosa-cbd.com',
-      fromName: 'Hermosa POS',
-      brevoApiKey: '',
-      brevoSmtpKey: '',
-    },
-    receiptSettings: {
-      headerText: 'Thank you for shopping at Hermosa CBD',
-      footerText: 'Visit us again soon!',
-      showVatNumber: true,
-      showStoreAddress: true,
-      showStorePhone: true,
-    },
-    generalSettings: {
-      language: 'en',
-      currency: 'EUR',
-      dateFormat: 'DD/MM/YYYY',
-      timeFormat: '24',
-    },
-  });
 
   const handleAddToCart = (product: Product, quantity: number, price: number) => {
     setCartItems(prevItems => {
@@ -254,9 +232,7 @@ function App() {
   };
 
   const handleUpdateStore = (id: string, storeData: Omit<Store, 'id' | 'createdAt'>) => {
-    set
-
-Stores(prev =>
+    setStores(prev =>
       prev.map(store =>
         store.id === id
           ? { ...store, ...storeData }
@@ -277,12 +253,6 @@ Stores(prev =>
       }
     }
     setStores(prev => prev.filter(store => store.id !== id));
-  };
-
-  const handleSaveSettings = (newSettings: AppSettings) => {
-    setSettings(newSettings);
-    // Here you would typically save the settings to a backend or local storage
-    localStorage.setItem('appSettings', JSON.stringify(newSettings));
   };
 
   return (
@@ -413,13 +383,6 @@ Stores(prev =>
               products={products}
               categories={categories}
               onUpdateProduct={handleUpdateProduct}
-            />
-          )}
-
-          {activeSection === 'settings' && (
-            <SettingsManagement
-              settings={settings}
-              onSaveSettings={handleSaveSettings}
             />
           )}
         </main>

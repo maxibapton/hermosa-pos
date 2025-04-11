@@ -100,25 +100,3 @@ export interface SaleRecord {
   refundDate?: Date;
   refundReason?: string;
 }
-
-export interface AppSettings {
-  emailSettings: {
-    fromEmail: string;
-    fromName: string;
-    brevoApiKey: string;
-    brevoSmtpKey: string;
-  };
-  receiptSettings: {
-    headerText: string;
-    footerText: string;
-    showVatNumber: boolean;
-    showStoreAddress: boolean;
-    showStorePhone: boolean;
-  };
-  generalSettings: {
-    language: string;
-    currency: string;
-    dateFormat: string;
-    timeFormat: string;
-  };
-}
