@@ -8,7 +8,7 @@ interface ProductGridProps {
   onAddToCart: (product: Product, quantity: number, price: number) => void;
 }
 
-export function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
+function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const handleProductClick = (product: Product) => {
@@ -48,7 +48,7 @@ export function ProductGrid({ products, categories, onAddToCart }: ProductGridPr
                   </div>
                   {!isBulk && (
                     <p className="text-gray-600 text-xl font-semibold">
-                      ${product.price?.toFixed(2)}
+                      €{product.price?.toFixed(2)}
                     </p>
                   )}
                   <p className="text-sm text-gray-500 mt-1">
@@ -73,3 +73,7 @@ export function ProductGrid({ products, categories, onAddToCart }: ProductGridPr
     </>
   );
 }
+
+export default ProductGrid;
+
+export { ProductGrid }
