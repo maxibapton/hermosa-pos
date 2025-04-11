@@ -15,3 +15,21 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  BRANCH = "main"
+
+[context.production]
+  publish = "dist"
+  command = "npm run build"
+  environment = { BRANCH = "main" }
+
+[context.deploy-preview]
+  ignore = "exit 0"
+
+[context.branch-deploy]
+  ignore = "exit 0"
+
+[context.main]
+  base = "/"
+  publish = "dist"
+  command = "npm run build"
+  environment = { BRANCH = "main" }

@@ -1,9 +1,9 @@
 import React from 'react';
-import { ShoppingCart, Package, History, Users, Building2, Archive } from 'lucide-react';
+import { ShoppingCart, Package, History, Users, Building2, Archive, Settings } from 'lucide-react';
 
 interface SidebarProps {
-  activeSection: 'register' | 'catalog' | 'sales' | 'customers' | 'stores' | 'stock';
-  onSectionChange: (section: 'register' | 'catalog' | 'sales' | 'customers' | 'stores' | 'stock') => void;
+  activeSection: 'register' | 'catalog' | 'sales' | 'customers' | 'stores' | 'stock' | 'settings';
+  onSectionChange: (section: 'register' | 'catalog' | 'sales' | 'customers' | 'stores' | 'stock' | 'settings') => void;
 }
 
 export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
@@ -78,6 +78,17 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
         >
           <Building2 size={20} />
           <span>Magasins</span>
+        </button>
+        <button
+          onClick={() => onSectionChange('settings')}
+          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+            activeSection === 'settings'
+              ? 'bg-indigo-50 text-indigo-600'
+              : 'text-gray-700 hover:bg-gray-50'
+          }`}
+        >
+          <Settings size={20} />
+          <span>Settings</span>
         </button>
       </nav>
     </div>
