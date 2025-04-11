@@ -18,8 +18,8 @@ export function CategoryFilter({
         onClick={() => onSelectCategory(null)}
         className={`px-4 py-2 rounded-full ${
           selectedCategory === null
-            ? 'bg-primary text-[#F7F4DF]'
-            : 'bg-accent/80 text-[#F7F4DF] hover:bg-accent'
+            ? 'bg-indigo-600 text-white'
+            : 'bg-slate-100 hover:bg-slate-200'
         }`}
       >
         All
@@ -30,8 +30,8 @@ export function CategoryFilter({
           onClick={() => onSelectCategory(category.id)}
           className={`px-4 py-2 rounded-full ${
             selectedCategory === category.id
-              ? 'bg-primary text-[#F7F4DF]'
-              : 'bg-accent/80 text-[#F7F4DF] hover:bg-accent'
+              ? 'bg-indigo-600 text-white'
+              : 'bg-slate-100 hover:bg-slate-200'
           }`}
         >
           {category.name}

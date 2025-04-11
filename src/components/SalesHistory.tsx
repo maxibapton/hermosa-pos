@@ -27,11 +27,10 @@ const translations = {
 
 interface SalesHistoryProps {
   sales: SaleRecord[];
-  stores: Store[];
   onRefundSale: (saleId: string, reason: string) => void;
 }
 
-export default function SalesHistory({ sales, stores, onRefundSale }: SalesHistoryProps) {
+export function SalesHistory({ sales, onRefundSale }: SalesHistoryProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
   const [sortField, setSortField] = useState<'date' | 'amount' | 'customer'>('date');

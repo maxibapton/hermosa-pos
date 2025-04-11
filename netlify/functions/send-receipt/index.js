@@ -7,7 +7,7 @@ const headers = {
   "Content-Type": "application/json"
 };
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
@@ -17,39 +17,36 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { email, subject, receiptHtml } = JSON.parse(event.body || '{}');
+    const { email, receiptHtml, subject } = JSON.parse(event.body);
 
-    if (!email || !subject || !receiptHtml) {
+    if (!email || !receiptHtml) {
       return {
         statusCode: 400,
         headers,
         body: JSON.stringify({ 
           success: false, 
-          error: 'Missing required fields' 
+          error: "Email and receipt content are required" 
         })
       };
     }
 
-    const brevoApiKey = process.env.BREVO_API_KEY;
-    const senderEmail = process.env.SMTP_FROM || 'hello@hermosa-cbd.com';
-
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
       headers: {
-        'api-key': brevoApiKey,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "api-key": process.env.BREVO_API_KEY
       },
       body: JSON.stringify({
-        sender: { 
-          email: senderEmail, 
-          name: 'CBD Wellness' 
+        sender: {
+          name: "Hermosa POS",
+          email: process.env.SMTP_FROM || "hello@hermosa-cbd.com"
         },
-        to: [{ 
-          email,
+        to: [{
+          email: email,
           name: email.split('@')[0]
         }],
-        subject,
+        subject: subject || "Your Receipt from Hermosa POS",
         htmlContent: receiptHtml
       })
     });
@@ -57,14 +54,14 @@ exports.handler = async (event) => {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('Brevo API error:', data);
+      console.error("Brevo API error:", data);
       return {
         statusCode: response.status,
         headers,
         body: JSON.stringify({ 
           success: false, 
-          error: 'Failed to send email',
-          details: data.message || 'Unknown error'
+          error: "Failed to send email",
+          details: data.message || "Unknown error"
         })
       };
     }
@@ -79,14 +76,14 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error("Error sending email:", error);
     return {
       statusCode: 500,
       headers,
       body: JSON.stringify({ 
         success: false, 
-        error: 'Internal server error',
-        details: error.message 
+        error: "Internal server error",
+        details: error.message
       })
     };
   }

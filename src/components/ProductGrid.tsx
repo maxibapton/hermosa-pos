@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Product, Category } from '../types';
 import { ProductSelectionModal } from './ProductSelectionModal';
-import { Package } from 'lucide-react';
 
 interface ProductGridProps {
   products: Product[];
@@ -9,7 +8,7 @@ interface ProductGridProps {
   onAddToCart: (product: Product, quantity: number, price: number) => void;
 }
 
-function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
+export function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const handleProductClick = (product: Product) => {
@@ -40,7 +39,7 @@ function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
               <div className="flex flex-col h-full">
                 <div className="flex-1">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-semibold text-primary text-lg">{product.name}</h3>
+                    <h3 className="font-semibold text-gray-800 text-lg">{product.name}</h3>
                     {isBulk && (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
                         {category?.defaultUnit}
@@ -48,13 +47,12 @@ function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
                     )}
                   </div>
                   {!isBulk && (
-                    <p className="text-accent text-xl font-bold">
-                      €{product.price?.toFixed(2)}
+                    <p className="text-gray-600 text-xl font-semibold">
+                      ${product.price?.toFixed(2)}
                     </p>
                   )}
-                  <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
-                    <Package size={16} />
-                    {product.stockQuantity} {isBulk ? category?.defaultUnit : 'unités'}
+                  <p className="text-sm text-gray-500 mt-1">
+                    Stock: {product.stockQuantity} {isBulk ? category?.defaultUnit : 'unités'}
                   </p>
                 </div>
               </div>
@@ -75,7 +73,3 @@ function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
     </>
   );
 }
-
-export default ProductGrid;
-
-export { ProductGrid }

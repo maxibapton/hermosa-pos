@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Logo } from './components/Logo';
 import { ProductGrid } from './components/ProductGrid';
 import { Cart } from './components/Cart';
@@ -6,14 +6,13 @@ import { CategoryFilter } from './components/CategoryFilter';
 import { AdminPanel } from './components/AdminPanel';
 import { CategoryManagement } from './components/CategoryManagement';
 import { CustomerManagement } from './components/CustomerManagement';
-import SalesHistory from './components/SalesHistory';
+import { SalesHistory } from './components/SalesHistory';
 import { Sidebar } from './components/Sidebar';
 import { StoreSelector } from './components/StoreSelector';
 import { StoreManagement } from './components/StoreManagement';
 import { StockManagement } from './components/StockManagement';
 import { products as initialProducts, categories as initialCategories, stores as initialStores } from './data';
 import { CartItem, Product, ProductFormData, SaleRecord, Category, Customer, CustomerFormData, PaymentInfo, Store } from './types';
-import { checkLowStock } from './utils/stockCheck';
 
 function App() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -26,21 +25,6 @@ function App() {
   const [catalogSection, setCatalogSection] = useState<'products' | 'categories'>('products');
   const [salesHistory, setSalesHistory] = useState<SaleRecord[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
-
-  useEffect(() => {
-    // Check stock levels every hour
-    const checkStock = async () => {
-      await checkLowStock();
-    };
-
-    // Initial check
-    checkStock();
-
-    // Set up interval
-    const interval = setInterval(checkStock, 60 * 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handleAddToCart = (product: Product, quantity: number, price: number) => {
     setCartItems(prevItems => {
@@ -379,7 +363,6 @@ function App() {
           {activeSection === 'sales' && (
             <SalesHistory 
               sales={salesHistory}
-              stores={stores}
               onRefundSale={handleRefundSale}
             />
           )}
