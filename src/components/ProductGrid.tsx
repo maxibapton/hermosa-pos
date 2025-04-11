@@ -39,11 +39,11 @@ function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
             >
               <div className="flex flex-col h-full">
                 <div className="flex-1">
-                  <h3 className="text-[#0013FF] text-xl mb-2 font-black">{product.name}</h3>
-                  <p className="text-[#FC5C04] text-2xl font-bold mb-2">
+                  <h3 className="font-black text-primary text-xl mb-2">{product.name}</h3>
+                  <p className="text-accent text-2xl font-bold mb-2">
                     ${product.price?.toFixed(2)}
                   </p>
-                  <div className="flex items-center gap-2 text-[#0013FF]">
+                  <div className="flex items-center gap-2 text-gray-600">
                     <Package size={16} />
                     <span>Stock: {product.stockQuantity} {isBulk ? category?.defaultUnit : 'unités'}</span>
                   </div>
