@@ -19,7 +19,7 @@ const translations = {
   cash: "Espèces",
   card: "Carte",
   thankYou: "Merci de votre achat !",
-  visitAgain: "À bientôt chez CBD Wellness"
+  visitAgain: "À bientôt chez Hermosa"
 };
 
 interface ReceiptProps {
