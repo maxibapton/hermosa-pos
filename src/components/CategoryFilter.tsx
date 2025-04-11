@@ -13,13 +13,13 @@ export function CategoryFilter({
   onSelectCategory,
 }: CategoryFilterProps) {
   return (
-    <div className="flex flex-wrap gap-2 p-4">
+    <div className="flex flex-wrap gap-4 p-4">
       <button
         onClick={() => onSelectCategory(null)}
-        className={`px-4 py-2 rounded-full ${
+        className={`px-6 py-2 rounded-full text-lg transition-colors ${
           selectedCategory === null
-            ? 'bg-indigo-600 text-white'
-            : 'bg-slate-100 hover:bg-slate-200'
+            ? 'bg-[#0013FF] text-white'
+            : 'bg-white text-[#0013FF] hover:bg-gray-50'
         }`}
       >
         All
@@ -28,10 +28,10 @@ export function CategoryFilter({
         <button
           key={category.id}
           onClick={() => onSelectCategory(category.id)}
-          className={`px-4 py-2 rounded-full ${
+          className={`px-6 py-2 rounded-full text-lg transition-colors ${
             selectedCategory === category.id
-              ? 'bg-indigo-600 text-white'
-              : 'bg-slate-100 hover:bg-slate-200'
+              ? 'bg-[#0013FF] text-white'
+              : 'bg-white text-[#0013FF] hover:bg-gray-50'
           }`}
         >
           {category.name}
