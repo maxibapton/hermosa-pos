@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Product, Category } from '../types';
 import { ProductSelectionModal } from './ProductSelectionModal';
-import { Package } from 'lucide-react';
 
 interface ProductGridProps {
   products: Product[];
@@ -9,7 +8,7 @@ interface ProductGridProps {
   onAddToCart: (product: Product, quantity: number, price: number) => void;
 }
 
-function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
+export function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const handleProductClick = (product: Product) => {
@@ -33,20 +32,28 @@ function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
             <div
               key={product.id}
               onClick={() => product.stockQuantity > 0 && handleProductClick(product)}
-              className={`bg-white rounded-lg p-6 hover:shadow-lg transition-shadow ${
+              className={`bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow ${
                 product.stockQuantity > 0 ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'
               }`}
             >
               <div className="flex flex-col h-full">
                 <div className="flex-1">
-                  <h3 className="font-black text-primary text-xl mb-2">{product.name}</h3>
-                  <p className="text-accent text-2xl font-bold mb-2">
-                    ${product.price?.toFixed(2)}
-                  </p>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Package size={16} />
-                    <span>Stock: {product.stockQuantity} {isBulk ? category?.defaultUnit : 'unités'}</span>
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-semibold text-gray-800 text-lg">{product.name}</h3>
+                    {isBulk && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                        {category?.defaultUnit}
+                      </span>
+                    )}
                   </div>
+                  {!isBulk && (
+                    <p className="text-gray-600 text-xl font-semibold">
+                      ${product.price?.toFixed(2)}
+                    </p>
+                  )}
+                  <p className="text-sm text-gray-500 mt-1">
+                    Stock: {product.stockQuantity} {isBulk ? category?.defaultUnit : 'unités'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -66,7 +73,3 @@ function ProductGrid({ products, categories, onAddToCart }: ProductGridProps) {
     </>
   );
 }
-
-export default ProductGrid;
-
-export { ProductGrid };

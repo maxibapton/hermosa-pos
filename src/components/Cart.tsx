@@ -169,21 +169,21 @@ export function Cart({
                   <div className="flex-1">
                     <h3 className="font-medium text-[#F7F4DF]">{item.name}</h3>
                     <p className="text-[#F7F4DF]/80">
-                      {item.quantity} {item.unitSize || translations.units} × €{(item.price / item.quantity).toFixed(2)}
+                      {item.quantity} {item.unitSize || translations.units} × ${(item.price / item.quantity).toFixed(2)}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                       <p className={`font-semibold ${item.discount ? 'text-[#F7F4DF]/40 line-through' : 'text-[#F7F4DF]'}`}>
-                        €{item.price.toFixed(2)}
+                        ${item.price.toFixed(2)}
                       </p>
                       {item.discount && (
                         <>
                           <span className="text-[#F7F4DF] font-semibold">
-                            €{(item.price - item.discount.amount).toFixed(2)}
+                            ${(item.price - item.discount.amount).toFixed(2)}
                           </span>
                           <span className="text-xs bg-green-500/20 text-[#F7F4DF] px-2 py-0.5 rounded-full">
                             {item.discount.type === 'percentage' 
                               ? `${item.discount.value}% off`
-                              : `€${item.discount.value} off`
+                              : `$${item.discount.value} off`
                             }
                           </span>
                           <button
@@ -236,12 +236,12 @@ export function Cart({
         <div className="mt-4 pt-4 border-t border-[#F7F4DF]/20 space-y-2">
           <div className="flex justify-between text-sm text-[#F7F4DF]/80">
             <span>{translations.subtotal}:</span>
-            <span>€{subtotal.toFixed(2)}</span>
+            <span>${subtotal.toFixed(2)}</span>
           </div>
           {itemDiscounts > 0 && (
             <div className="flex justify-between text-sm text-green-300">
               <span>{translations.itemDiscounts}:</span>
-              <span>-€{itemDiscounts.toFixed(2)}</span>
+              <span>-${itemDiscounts.toFixed(2)}</span>
             </div>
           )}
           {totalDiscount && (
@@ -251,7 +251,7 @@ export function Cart({
                 <span className="text-xs bg-green-500/20 text-[#F7F4DF] px-2 py-0.5 rounded-full">
                   {totalDiscount.type === 'percentage' 
                     ? `${totalDiscount.value}%`
-                    : `€${totalDiscount.value}`
+                    : `$${totalDiscount.value}`
                   }
                 </span>
                 <button
@@ -261,12 +261,12 @@ export function Cart({
                   {translations.removeDiscount}
                 </button>
               </div>
-              <span>-€{totalDiscount.amount.toFixed(2)}</span>
+              <span>-${totalDiscount.amount.toFixed(2)}</span>
             </div>
           )}
           <div className="flex justify-between text-lg font-semibold text-[#F7F4DF]">
             <span>{translations.total}:</span>
-            <span>€{total.toFixed(2)}</span>
+            <span>${total.toFixed(2)}</span>
           </div>
           <div className="flex gap-2">
             <button

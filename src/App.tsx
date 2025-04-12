@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Logo } from './components/Logo';
 import { ProductGrid } from './components/ProductGrid';
 import { Cart } from './components/Cart';
@@ -6,88 +6,25 @@ import { CategoryFilter } from './components/CategoryFilter';
 import { AdminPanel } from './components/AdminPanel';
 import { CategoryManagement } from './components/CategoryManagement';
 import { CustomerManagement } from './components/CustomerManagement';
-import SalesHistory from './components/SalesHistory';
+import { SalesHistory } from './components/SalesHistory';
 import { Sidebar } from './components/Sidebar';
 import { StoreSelector } from './components/StoreSelector';
 import { StoreManagement } from './components/StoreManagement';
 import { StockManagement } from './components/StockManagement';
-import { supabase } from './lib/supabase';
+import { products as initialProducts, categories as initialCategories, stores as initialStores } from './data';
 import { CartItem, Product, ProductFormData, SaleRecord, Category, Customer, CustomerFormData, PaymentInfo, Store } from './types';
-import { checkLowStock } from './utils/stockCheck';
 
 function App() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [stores, setStores] = useState<Store[]>([]);
-  const [selectedStore, setSelectedStore] = useState<Store | null>(null);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [stores, setStores] = useState<Store[]>(initialStores);
+  const [selectedStore, setSelectedStore] = useState<Store>(stores[0]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<'register' | 'catalog' | 'sales' | 'customers' | 'stores' | 'stock'>('register');
   const [catalogSection, setCatalogSection] = useState<'products' | 'categories'>('products');
   const [salesHistory, setSalesHistory] = useState<SaleRecord[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchInitialData();
-  }, []);
-
-  const fetchInitialData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Fetch products
-      const { data: productsData, error: productsError } = await supabase
-        .from('products')
-        .select('*');
-
-      if (productsError) throw productsError;
-
-      // Fetch categories
-      const { data: categoriesData, error: categoriesError } = await supabase
-        .from('categories')
-        .select('*');
-
-      if (categoriesError) throw categoriesError;
-
-      // Fetch stores
-      const { data: storesData, error: storesError } = await supabase
-        .from('stores')
-        .select('*');
-
-      if (storesError) throw storesError;
-
-      setProducts(productsData || []);
-      setCategories(categoriesData || []);
-      setStores(storesData || []);
-      if (storesData && storesData.length > 0) {
-        setSelectedStore(storesData[0]);
-      }
-
-    } catch (err) {
-      console.error('Error fetching data:', err);
-      setError('Failed to load data. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    // Check stock levels every hour
-    const checkStock = async () => {
-      await checkLowStock();
-    };
-
-    // Initial check
-    checkStock();
-
-    // Set up interval
-    const interval = setInterval(checkStock, 60 * 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handleAddToCart = (product: Product, quantity: number, price: number) => {
     setCartItems(prevItems => {
@@ -145,7 +82,7 @@ function App() {
   const handleCheckout = (customerId: string | undefined, payment: PaymentInfo, totalDiscount?: { type: 'percentage' | 'fixed'; value: number; amount: number }) => {
     const newSale: SaleRecord = {
       id: Math.random().toString(36).substr(2, 9),
-      storeId: selectedStore!.id,
+      storeId: selectedStore.id,
       date: new Date(),
       customerId,
       customerName: customerId ? customers.find(c => c.id === customerId)?.firstName + ' ' + customers.find(c => c.id === customerId)?.lastName : undefined,
@@ -309,7 +246,7 @@ function App() {
       alert('Cannot delete the last store');
       return;
     }
-    if (selectedStore?.id === id) {
+    if (selectedStore.id === id) {
       const remainingStore = stores.find(s => s.id !== id);
       if (remainingStore) {
         setSelectedStore(remainingStore);
@@ -317,34 +254,6 @@ function App() {
     }
     setStores(prev => prev.filter(store => store.id !== id));
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-primary font-medium">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-          <h2 className="text-xl font-bold text-red-600 mb-4">Error</h2>
-          <p className="text-gray-700 mb-4">{error}</p>
-          <button
-            onClick={fetchInitialData}
-            className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -357,7 +266,7 @@ function App() {
               <Logo />
             </div>
           </div>
-          {activeSection !== 'stores' && selectedStore && (
+          {activeSection !== 'stores' && (
             <StoreSelector
               stores={stores}
               selectedStore={selectedStore}
@@ -454,7 +363,6 @@ function App() {
           {activeSection === 'sales' && (
             <SalesHistory 
               sales={salesHistory}
-              stores={stores}
               onRefundSale={handleRefundSale}
             />
           )}
