@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Customer, CustomerFormData } from '../types';
-import { Plus, Edit2, Trash2, Search, Users, Mail, Phone, MapPin, FileText, Calendar, ShoppingBag, ArrowUpDown } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, Users, Mail, Phone, FileText, Calendar, ShoppingBag, ArrowUpDown, Download } from 'lucide-react';
 import { CustomerDataExportImport } from './CustomerDataExportImport';
 
 const translations = {
@@ -12,7 +12,6 @@ const translations = {
   lastName: "Nom",
   email: "Email",
   phone: "Téléphone",
-  address: "Adresse",
   notes: "Notes",
   update: "Mettre à jour",
   cancel: "Annuler",
@@ -24,7 +23,8 @@ const translations = {
   newThisMonth: "Nouveaux ce Mois",
   returningCustomers: "Clients Fidèles",
   exportCsv: "Exporter CSV",
-  importCsv: "Importer CSV"
+  importCsv: "Importer CSV",
+  downloadTemplate: "Télécharger le modèle CSV"
 };
 
 interface CustomerManagementProps {
@@ -52,7 +52,6 @@ export function CustomerManagement({
     lastName: '',
     email: '',
     phone: '',
-    address: '',
     notes: '',
   });
 
@@ -74,7 +73,6 @@ export function CustomerManagement({
       lastName: '',
       email: '',
       phone: '',
-      address: '',
       notes: '',
     });
   };
@@ -86,7 +84,6 @@ export function CustomerManagement({
       lastName: customer.lastName,
       email: customer.email,
       phone: customer.phone || '',
-      address: customer.address || '',
       notes: customer.notes || '',
     });
     setShowForm(true);
@@ -99,6 +96,16 @@ export function CustomerManagement({
       setSortField(field);
       setSortDirection('desc');
     }
+  };
+
+  const handleDownloadTemplate = () => {
+    const link = document.createElement('a');
+    link.href = '/customer_import_template.csv';
+    link.download = 'customer_import_template.csv';
+    link.type = 'text/csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const filteredAndSortedCustomers = customers
@@ -165,6 +172,13 @@ export function CustomerManagement({
               <h2 className="text-2xl font-bold text-gray-900">{translations.title}</h2>
             </div>
             <div className="flex gap-4">
+              <button
+                onClick={handleDownloadTemplate}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2"
+              >
+                <Download size={20} />
+                {translations.downloadTemplate}
+              </button>
               <CustomerDataExportImport 
                 customers={customers}
                 onImport={onImportCustomers}
@@ -245,21 +259,6 @@ export function CustomerManagement({
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {translations.address}
-                </label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-2.5 text-gray-400" size={18} />
-                  <input
-                    type="text"
-                    value={formData.address}
-                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Street address, city, state, zip"
                   />
                 </div>
               </div>
@@ -376,12 +375,6 @@ export function CustomerManagement({
                           <div className="font-medium">
                             {customer.firstName} {customer.lastName}
                           </div>
-                          {customer.address && (
-                            <div className="text-sm text-gray-500 flex items-center gap-1">
-                              <MapPin size={14} />
-                              {customer.address}
-                            </div>
-                          )}
                         </div>
                       </td>
                       <td className="px-4 py-3">

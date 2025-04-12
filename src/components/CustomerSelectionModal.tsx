@@ -22,7 +22,6 @@ export function CustomerSelectionModal({
     lastName: '',
     email: '',
     phone: '',
-    address: '',
   });
 
   const filteredCustomers = customers.filter(
@@ -41,7 +40,6 @@ export function CustomerSelectionModal({
       lastName: '',
       email: '',
       phone: '',
-      address: '',
     });
   };
 
@@ -134,19 +132,6 @@ export function CustomerSelectionModal({
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  value={formData.address}
-                  onChange={(e) =>
-                    setFormData({ ...formData, address: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
             </div>
             <div className="mt-4 flex gap-2">
               <button
@@ -190,9 +175,6 @@ export function CustomerSelectionModal({
                     {customer.email}
                     {customer.phone && ` • ${customer.phone}`}
                   </div>
-                  {customer.address && (
-                    <div className="text-sm text-gray-500">{customer.address}</div>
-                  )}
                 </button>
               ))}
             </div>

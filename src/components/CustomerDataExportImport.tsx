@@ -16,7 +16,6 @@ export function CustomerDataExportImport({ customers, onImport }: CustomerDataEx
       'Last Name',
       'Email',
       'Phone',
-      'Address',
       'Notes',
       'Created At',
       'Last Purchase',
@@ -28,7 +27,6 @@ export function CustomerDataExportImport({ customers, onImport }: CustomerDataEx
       customer.lastName,
       customer.email,
       customer.phone || '',
-      customer.address || '',
       customer.notes || '',
       customer.createdAt.toISOString(),
       customer.lastPurchase?.toISOString() || '',
@@ -73,11 +71,10 @@ export function CustomerDataExportImport({ customers, onImport }: CustomerDataEx
               lastName: values[1],
               email: values[2],
               phone: values[3] || undefined,
-              address: values[4] || undefined,
-              notes: values[5] || undefined,
-              createdAt: new Date(values[6]),
-              lastPurchase: values[7] ? new Date(values[7]) : undefined,
-              totalPurchases: parseInt(values[8])
+              notes: values[4] || undefined,
+              createdAt: new Date(values[5]),
+              lastPurchase: values[6] ? new Date(values[6]) : undefined,
+              totalPurchases: parseInt(values[7])
             };
           });
 

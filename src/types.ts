@@ -44,7 +44,6 @@ export interface Customer {
   lastName: string;
   email: string;
   phone?: string;
-  address?: string;
   notes?: string;
   createdAt: Date;
   lastPurchase?: Date;
@@ -56,7 +55,6 @@ export interface CustomerFormData {
   lastName: string;
   email: string;
   phone?: string;
-  address?: string;
   notes?: string;
 }
 
@@ -69,6 +67,7 @@ export interface PaymentInfo {
 export interface SaleRecord {
   id: string;
   storeId: string;
+  storeName: string;
   date: Date;
   customerId?: string;
   customerName?: string;

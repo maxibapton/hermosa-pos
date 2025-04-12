@@ -12,10 +12,10 @@ const translations = {
   selectCustomer: "Sélectionner un Client",
   selectedCustomer: "Client Sélectionné",
   change: "Changer",
-  subtotal: "Sous-total",
+  subtotal: "Montant HT",
   itemDiscounts: "Remises Articles",
   totalDiscount: "Remise Totale",
-  total: "Total",
+  total: "Montant TTC",
   addDiscount: "Ajouter une Remise",
   checkout: "Paiement",
   quantity: "Quantité",
@@ -125,7 +125,6 @@ export function Cart({
       <div className="bg-blue-600 rounded-lg shadow-md p-4 h-full flex flex-col text-[#F7F4DF]">
         <h2 className="text-xl font-semibold mb-4 text-[#F7F4DF]">{translations.title}</h2>
 
-        {/* Customer Selection */}
         <div className="mb-4 p-3 bg-blue-700 rounded-lg">
           {selectedCustomer ? (
             <div className="space-y-2">
@@ -155,7 +154,6 @@ export function Cart({
           )}
         </div>
 
-        {/* Cart Items */}
         <div className="flex-1 overflow-auto">
           {items.length === 0 ? (
             <div className="text-center py-8 text-[#F7F4DF]/80">
@@ -168,22 +166,31 @@ export function Cart({
                 <li key={item.id} className="flex items-center gap-4 bg-blue-700 p-3 rounded-lg">
                   <div className="flex-1">
                     <h3 className="font-medium text-[#F7F4DF]">{item.name}</h3>
-                    <p className="text-[#F7F4DF]/80">
-                      {item.quantity} {item.unitSize || translations.units} × ${(item.price / item.quantity).toFixed(2)}
-                    </p>
+                    {item.unitSize ? (
+                      <div className="text-[#F7F4DF]/80">
+                        <span>{item.quantity} {item.unitSize}</span>
+                        <span className="mx-2">•</span>
+                        <span>{item.price.toFixed(2)}€</span>
+                        <span className="text-sm ml-2">({(item.price / item.quantity).toFixed(2)}€/{item.unitSize})</span>
+                      </div>
+                    ) : (
+                      <p className="text-[#F7F4DF]/80">
+                        {item.quantity} {translations.units} × {(item.price / item.quantity).toFixed(2)}€
+                      </p>
+                    )}
                     <div className="flex items-center gap-2 mt-1">
                       <p className={`font-semibold ${item.discount ? 'text-[#F7F4DF]/40 line-through' : 'text-[#F7F4DF]'}`}>
-                        ${item.price.toFixed(2)}
+                        {item.price.toFixed(2)}€
                       </p>
                       {item.discount && (
                         <>
                           <span className="text-[#F7F4DF] font-semibold">
-                            ${(item.price - item.discount.amount).toFixed(2)}
+                            {(item.price - item.discount.amount).toFixed(2)}€
                           </span>
                           <span className="text-xs bg-green-500/20 text-[#F7F4DF] px-2 py-0.5 rounded-full">
                             {item.discount.type === 'percentage' 
                               ? `${item.discount.value}% off`
-                              : `$${item.discount.value} off`
+                              : `${item.discount.value}€ off`
                             }
                           </span>
                           <button
@@ -203,7 +210,9 @@ export function Cart({
                     >
                       <Minus size={16} className="text-[#F7F4DF]" />
                     </button>
-                    <span className="w-16 text-center text-[#F7F4DF]">{item.quantity.toFixed(item.unitSize ? 3 : 0)}</span>
+                    <span className="w-16 text-center text-[#F7F4DF]">
+                      {item.quantity.toFixed(item.unitSize ? 1 : 0)}
+                    </span>
                     <button
                       onClick={() => onUpdateQuantity(item.id, item.quantity + (item.unitSize ? 0.1 : 1))}
                       className="p-1 rounded-full hover:bg-blue-600"
@@ -232,16 +241,15 @@ export function Cart({
           )}
         </div>
 
-        {/* Total and Checkout */}
         <div className="mt-4 pt-4 border-t border-[#F7F4DF]/20 space-y-2">
           <div className="flex justify-between text-sm text-[#F7F4DF]/80">
             <span>{translations.subtotal}:</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>{subtotal.toFixed(2)}€</span>
           </div>
           {itemDiscounts > 0 && (
             <div className="flex justify-between text-sm text-green-300">
               <span>{translations.itemDiscounts}:</span>
-              <span>-${itemDiscounts.toFixed(2)}</span>
+              <span>-{itemDiscounts.toFixed(2)}€</span>
             </div>
           )}
           {totalDiscount && (
@@ -251,7 +259,7 @@ export function Cart({
                 <span className="text-xs bg-green-500/20 text-[#F7F4DF] px-2 py-0.5 rounded-full">
                   {totalDiscount.type === 'percentage' 
                     ? `${totalDiscount.value}%`
-                    : `$${totalDiscount.value}`
+                    : `${totalDiscount.value}€`
                   }
                 </span>
                 <button
@@ -261,12 +269,12 @@ export function Cart({
                   {translations.removeDiscount}
                 </button>
               </div>
-              <span>-${totalDiscount.amount.toFixed(2)}</span>
+              <span>-{totalDiscount.amount.toFixed(2)}€</span>
             </div>
           )}
           <div className="flex justify-between text-lg font-semibold text-[#F7F4DF]">
             <span>{translations.total}:</span>
-            <span>${total.toFixed(2)}</span>
+            <span>{total.toFixed(2)}€</span>
           </div>
           <div className="flex gap-2">
             <button

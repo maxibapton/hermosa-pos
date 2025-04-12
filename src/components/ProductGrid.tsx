@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Product, Category } from '../types';
 import { ProductSelectionModal } from './ProductSelectionModal';
+import { Package } from 'lucide-react';
 
 interface ProductGridProps {
   products: Product[];
@@ -23,7 +24,7 @@ export function ProductGrid({ products, categories, onAddToCart }: ProductGridPr
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
         {products.map((product) => {
           const category = categories.find(c => c.id === product.category);
           const isBulk = category?.isBulk ?? false;
@@ -48,12 +49,13 @@ export function ProductGrid({ products, categories, onAddToCart }: ProductGridPr
                   </div>
                   {!isBulk && (
                     <p className="text-gray-600 text-xl font-semibold">
-                      ${product.price?.toFixed(2)}
+                      {product.price?.toFixed(2)}€
                     </p>
                   )}
-                  <p className="text-sm text-gray-500 mt-1">
-                    Stock: {product.stockQuantity} {isBulk ? category?.defaultUnit : 'unités'}
-                  </p>
+                  <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                    <Package size={16} />
+                    <span>{product.stockQuantity} {isBulk ? category?.defaultUnit : 'unités'}</span>
+                  </div>
                 </div>
               </div>
             </div>

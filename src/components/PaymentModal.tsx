@@ -109,7 +109,7 @@ export function PaymentModal({ total, onClose, onConfirm }: PaymentModalProps) {
           {/* Total Amount Display */}
           <div className="bg-indigo-50 p-4 rounded-lg text-center">
             <p className="text-sm text-indigo-600 font-medium">{translations.totalAmount}</p>
-            <p className="text-3xl font-bold text-indigo-700">${total.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-indigo-700">{total.toFixed(2)}€</p>
           </div>
 
           {/* Payment Method Selection */}
@@ -236,11 +236,11 @@ export function PaymentModal({ total, onClose, onConfirm }: PaymentModalProps) {
                         <div className="mt-2 grid grid-cols-2 gap-4 bg-gray-50 p-3 rounded-lg text-sm">
                           <div>
                             <span className="text-gray-500">{translations.cash}:</span>
-                            <span className="ml-2 font-medium">${cashAmount}</span>
+                            <span className="ml-2 font-medium">{cashAmount}€</span>
                           </div>
                           <div>
                             <span className="text-gray-500">{translations.card}:</span>
-                            <span className="ml-2 font-medium">${cardAmount}</span>
+                            <span className="ml-2 font-medium">{cardAmount}€</span>
                           </div>
                         </div>
                       </div>
@@ -250,7 +250,6 @@ export function PaymentModal({ total, onClose, onConfirm }: PaymentModalProps) {
                           {translations.cashAmount}
                         </label>
                         <div className="relative">
-                          <span className="absolute left-3 top-2 text-gray-500">$</span>
                           <input
                             type="number"
                             step="0.01"
@@ -260,11 +259,12 @@ export function PaymentModal({ total, onClose, onConfirm }: PaymentModalProps) {
                             onChange={(e) => handleSplitCashChange(e.target.value)}
                             className="w-full pl-7 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                           />
+                          <span className="absolute right-3 top-2 text-gray-500">€</span>
                         </div>
                         <div className="mt-2 bg-gray-50 p-3 rounded-lg">
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-500">{translations.cardAmount}:</span>
-                            <span className="font-medium">${cardAmount}</span>
+                            <span className="font-medium">{cardAmount}€</span>
                           </div>
                         </div>
                       </div>
@@ -277,7 +277,6 @@ export function PaymentModal({ total, onClose, onConfirm }: PaymentModalProps) {
                     {translations.receivedAmount}
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-2 text-gray-500">$</span>
                     <input
                       type="number"
                       step="0.01"
@@ -286,6 +285,7 @@ export function PaymentModal({ total, onClose, onConfirm }: PaymentModalProps) {
                       onChange={(e) => handleCashReceivedChange(e.target.value)}
                       className="w-full pl-7 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
+                    <span className="absolute right-3 top-2 text-gray-500">€</span>
                   </div>
                 </div>
 
@@ -293,7 +293,7 @@ export function PaymentModal({ total, onClose, onConfirm }: PaymentModalProps) {
                   <div className="bg-green-50 p-3 rounded-lg">
                     <div className="flex justify-between items-center text-green-700">
                       <span className="font-medium">{translations.changeDue}:</span>
-                      <span className="text-lg font-bold">${calculateChange().toFixed(2)}</span>
+                      <span className="text-lg font-bold">{calculateChange().toFixed(2)}€</span>
                     </div>
                   </div>
                 )}

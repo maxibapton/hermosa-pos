@@ -13,6 +13,7 @@ import { StoreManagement } from './components/StoreManagement';
 import { StockManagement } from './components/StockManagement';
 import { products as initialProducts, categories as initialCategories, stores as initialStores } from './data';
 import { CartItem, Product, ProductFormData, SaleRecord, Category, Customer, CustomerFormData, PaymentInfo, Store } from './types';
+import { Menu } from 'lucide-react';
 
 function App() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -25,15 +26,34 @@ function App() {
   const [catalogSection, setCatalogSection] = useState<'products' | 'categories'>('products');
   const [salesHistory, setSalesHistory] = useState<SaleRecord[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const handleAddToCart = (product: Product, quantity: number, price: number) => {
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
       
       if (existingItem) {
+        if (!product.unitSize) {
+          const newQuantity = existingItem.quantity + 1;
+          return prevItems.map(item =>
+            item.id === product.id
+              ? {
+                  ...item,
+                  quantity: newQuantity,
+                  price: product.price! * newQuantity,
+                  vatAmount: (product.price! * newQuantity) * (product.vatRate / 100)
+                }
+              : item
+          );
+        }
         return prevItems.map(item =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
+            ? {
+                ...item,
+                quantity: item.quantity + quantity,
+                price: item.price + price,
+                vatAmount: (item.price + price) * (product.vatRate / 100)
+              }
             : item
         );
       }
@@ -41,8 +61,8 @@ function App() {
       const newItem: CartItem = {
         ...product,
         quantity,
-        price: price * quantity,
-        vatAmount: (price * quantity) * (product.vatRate / 100)
+        price: product.unitSize ? price : (product.price! * quantity),
+        vatAmount: (product.unitSize ? price : (product.price! * quantity)) * (product.vatRate / 100)
       };
 
       return [...prevItems, newItem];
@@ -53,7 +73,8 @@ function App() {
     setCartItems(prevItems => 
       prevItems.map(item => {
         if (item.id === id) {
-          const basePrice = item.price / item.quantity;
+          const product = products.find(p => p.id === id)!;
+          const basePrice = product.unitSize ? item.price / item.quantity : product.price!;
           const newPrice = basePrice * quantity;
           return {
             ...item,
@@ -83,6 +104,7 @@ function App() {
     const newSale: SaleRecord = {
       id: Math.random().toString(36).substr(2, 9),
       storeId: selectedStore.id,
+      storeName: selectedStore.name,
       date: new Date(),
       customerId,
       customerName: customerId ? customers.find(c => c.id === customerId)?.firstName + ' ' + customers.find(c => c.id === customerId)?.lastName : undefined,
@@ -255,11 +277,38 @@ function App() {
     setStores(prev => prev.filter(store => store.id !== id));
   };
 
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar);
+  };
+
   return (
     <div className="min-h-screen bg-background flex">
-      <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
-      
-      <div className="flex-1">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={toggleSidebar}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md"
+      >
+        <Menu size={24} />
+      </button>
+
+      {/* Sidebar */}
+      <div className={`
+        fixed inset-y-0 left-0 z-40 w-64 bg-white transform transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0
+        ${showSidebar ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
+      </div>
+
+      {/* Overlay */}
+      {showSidebar && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-h-screen">
         <header className="bg-white shadow-sm">
           <div className="px-4 py-4">
             <div className="flex items-center gap-4">
@@ -275,10 +324,10 @@ function App() {
           )}
         </header>
 
-        <main className="p-6">
+        <main className="flex-1 p-4 lg:p-6 overflow-auto">
           {activeSection === 'register' && (
-            <div className="grid grid-cols-[65%_35%] gap-6">
-              <div>
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
+              <div className="space-y-4">
                 <CategoryFilter
                   categories={categories}
                   selectedCategory={selectedCategory}
@@ -292,7 +341,7 @@ function App() {
                   onAddToCart={handleAddToCart}
                 />
               </div>
-              <div>
+              <div className="lg:sticky lg:top-6 h-[calc(100vh-6rem)]">
                 <Cart
                   items={cartItems}
                   customers={customers}
@@ -363,6 +412,7 @@ function App() {
           {activeSection === 'sales' && (
             <SalesHistory 
               sales={salesHistory}
+              stores={stores}
               onRefundSale={handleRefundSale}
             />
           )}

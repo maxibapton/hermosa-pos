@@ -9,7 +9,7 @@
   included_files = [".env"]
 
 [[redirects]]
-  from = "/api/*"
+  from = "/.netlify/functions/*"
   to = "/.netlify/functions/:splat"
   status = 200
 

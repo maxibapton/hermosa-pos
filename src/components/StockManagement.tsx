@@ -25,9 +25,6 @@ export function StockManagement({ products, categories, onUpdateProduct }: Stock
   const totalProducts = products.length;
   const lowStockCount = products.filter(p => p.stockQuantity < 10).length;
   const outOfStockCount = products.filter(p => p.stockQuantity === 0).length;
-  const totalStockValue = products.reduce((sum, product) => {
-    return sum + (product.price || 0) * product.stockQuantity;
-  }, 0);
 
   const handleStockAdjustment = (product: Product, amount: number) => {
     const newQuantity = Math.max(0, product.stockQuantity + amount);
@@ -37,7 +34,7 @@ export function StockManagement({ products, categories, onUpdateProduct }: Stock
   return (
     <div className="space-y-6">
       {/* Stock Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-sm font-medium text-gray-500">Total Produits</h3>
           <p className="text-3xl font-bold text-indigo-600 mt-2">{totalProducts}</p>
@@ -49,10 +46,6 @@ export function StockManagement({ products, categories, onUpdateProduct }: Stock
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-sm font-medium text-gray-500">Rupture de Stock</h3>
           <p className="text-3xl font-bold text-red-500 mt-2">{outOfStockCount}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-sm font-medium text-gray-500">Valeur du Stock</h3>
-          <p className="text-3xl font-bold text-green-600 mt-2">{totalStockValue.toFixed(2)} €</p>
         </div>
       </div>
 

@@ -2,6 +2,20 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Product } from '../types';
 
+const translations = {
+  title: "Sélection du Produit",
+  quantity: "Quantité",
+  availableStock: "Stock disponible",
+  totalPrice: "Prix Total",
+  pricePerUnit: "Prix par",
+  cancel: "Annuler",
+  addToCart: "Ajouter au Panier",
+  invalidQuantity: "Veuillez saisir une quantité valide",
+  invalidPrice: "Veuillez saisir un prix valide",
+  notEnoughStock: "Stock insuffisant",
+  units: "unités"
+};
+
 interface ProductSelectionModalProps {
   product: Product;
   isBulk: boolean;
@@ -17,28 +31,35 @@ export function ProductSelectionModal({
   onClose,
   onConfirm,
 }: ProductSelectionModalProps) {
-  const [quantity, setQuantity] = useState(isBulk ? '0.1' : '1');
-  const [price, setPrice] = useState(isBulk ? '' : (product.price?.toString() ?? ''));
+  const [quantity, setQuantity] = useState(isBulk ? '1.00' : '1');
+  const [totalPrice, setTotalPrice] = useState(isBulk ? '' : (product.price?.toString() ?? ''));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const parsedQuantity = parseFloat(quantity);
-    const parsedPrice = parseFloat(price);
+    const parsedPrice = parseFloat(totalPrice);
     
     if (!parsedQuantity || parsedQuantity <= 0) {
-      alert('Please enter a valid quantity');
+      alert(translations.invalidQuantity);
       return;
     }
     if (!parsedPrice || parsedPrice <= 0) {
-      alert('Please enter a valid price');
+      alert(translations.invalidPrice);
       return;
     }
     if (parsedQuantity > product.stockQuantity) {
-      alert('Not enough stock available');
+      alert(translations.notEnoughStock);
       return;
     }
+
     onConfirm(product, parsedQuantity, parsedPrice);
     onClose();
+  };
+
+  const calculatePricePerUnit = () => {
+    const qty = parseFloat(quantity) || 0;
+    const price = parseFloat(totalPrice) || 0;
+    return qty > 0 ? (price / qty).toFixed(2) : '0.00';
   };
 
   return (
@@ -58,12 +79,12 @@ export function ProductSelectionModal({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Quantity {defaultUnit && `(${defaultUnit})`}
+                {translations.quantity} {defaultUnit && `(${defaultUnit})`}
               </label>
               <input
                 type="number"
-                min={isBulk ? "0.001" : "1"}
-                step={isBulk ? "0.001" : "1"}
+                min={isBulk ? "0.01" : "1"}
+                step={isBulk ? "0.01" : "1"}
                 max={product.stockQuantity}
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
@@ -71,29 +92,29 @@ export function ProductSelectionModal({
                 required
               />
               <p className="text-sm text-gray-500 mt-1">
-                Available stock: {product.stockQuantity} {defaultUnit || 'units'}
+                {translations.availableStock}: {product.stockQuantity} {defaultUnit || translations.units}
               </p>
             </div>
             
             {isBulk && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Total Price
+                  {translations.totalPrice}
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2 text-gray-500">$</span>
+                  <span className="absolute left-3 top-2 text-gray-500">€</span>
                   <input
                     type="number"
                     min="0.01"
                     step="0.01"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
+                    value={totalPrice}
+                    onChange={(e) => setTotalPrice(e.target.value)}
                     className="w-full pl-7 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     required
                   />
                 </div>
                 <p className="text-sm text-gray-500 mt-1">
-                  Price per {defaultUnit}: ${((parseFloat(price) || 0) / (parseFloat(quantity) || 1)).toFixed(2)}
+                  {translations.pricePerUnit} {defaultUnit}: {calculatePricePerUnit()}€
                 </p>
               </div>
             )}
@@ -105,13 +126,13 @@ export function ProductSelectionModal({
               onClick={onClose}
               className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
-              Cancel
+              {translations.cancel}
             </button>
             <button
               type="submit"
               className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
             >
-              Add to Cart
+              {translations.addToCart}
             </button>
           </div>
         </form>
